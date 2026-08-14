@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIX Festival Futbolístico Estrellitas del Deporte - Colegio Mis Monachos</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        monachos: {
+                            green: '#15803d',
+                            darkgreen: '#166534',
+                            lightgreen: '#84cc16',
+                            red: '#dc2626',
+                            yellow: '#facc15',
+                            gold: '#eab308'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- jsPDF & jsPDF AutoTable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        .font-fredoka {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        /* Vertical Video Ratio 9:16 */
+        .vertical-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 9 / 16;
+            margin: 0 auto;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        .grass-bg {
+            background-color: #0f5127;
+            background-image: radial-gradient(#15803d 1.5px, transparent 1.5px), radial-gradient(#15803d 1.5px, #0f5127 1.5px);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+        .badge-pulse {
+            animation: pulse-slow 2s infinite;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes alert-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 22px 6px rgba(220, 38, 38, 0.4); transform: scale(1.01); }
+        }
+        .animate-alert-pulse {
+            animation: alert-pulse 1.8s infinite ease-in-out;
+        }
+
+        .btn-loading { pointer-events: none; opacity: .75; }
+        .toast-wrap { position: fixed; right: 1rem; bottom: 1rem; z-index: 100; display: grid; gap: .75rem; width: min(92vw, 420px); }
+        .toast { border-radius: 1rem; padding: .9rem 1rem; box-shadow: 0 15px 35px rgba(15,23,42,.18); border: 1px solid rgb(226 232 240); background: white; }
+        .toast.success { border-left: 4px solid #16a34a; }
+        .toast.error { border-left: 4px solid #dc2626; }
+        .toast.info { border-left: 4px solid #2563eb; }
+        .field-error { border-color: #dc2626 !important; box-shadow: 0 0 0 2px rgba(220,38,38,.1) !important; }
+        @media print { .no-print { display:none !important; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-yellow-400 selection:text-green-900">
+
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Host Brand Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-green-600 to-emerald-800 rounded-full text-white shadow-md font-bold border-2 border-yellow-400 overflow-hidden p-1">
+                        <img src="https://i.ibb.co/jPhKS08q/logo.png" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'font-fredoka text-xl text-yellow-300\'>MM</span>';" alt="Logo Colegio Mis Monachos" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="block text-xs font-bold tracking-wider text-green-700 uppercase">Colegio Anfitrión</span>
+                        <h1 class="text-lg sm:text-xl font-fredoka font-bold text-slate-900 leading-none">
+                            COLEGIO MIS MONACHOS
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-6 text-sm font-semibold text-slate-700">
+                    <a href="#invitacion" class="hover:text-green-600 transition">Invitación</a>
+                    <a href="#categorias" class="hover:text-green-600 transition">Categorías</a>
+                    <a href="#costos" class="hover:text-green-600 transition">Inversión</a>
+                    <a href="#reglamento" class="hover:text-green-600 transition">Reglamento</a>
+                    <a href="#programacion" class="hover:text-green-600 transition">Programación</a>
+                    <a href="#video-promo" class="hover:text-green-600 transition">Video</a>
+                </nav>
+
+                <!-- CTA Button -->
+                <a href="#inscripcion" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-full shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition transform hover:-translate-y-0.5 text-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span>Inscribir Colegio</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative grass-bg text-white py-16 lg:py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Main Event Banner Text -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-yellow-400 text-green-950 font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm uppercase tracking-wide shadow">
+                        <i class="fa-solid fa-trophy text-red-600"></i>
+                        <span>XIX TEMPORADA 2026 - NEIVA, HUILA</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-fredoka font-extrabold text-white leading-tight drop-shadow-md">
+                        XIX FESTIVAL FUTBOLÍSTICO <br>
+                        <span class="text-yellow-400 underline decoration-red-500 decoration-4">ESTRELLITAS DEL DEPORTE</span>
+                    </h1>
+
+                    <p class="text-slate-100 text-base sm:text-lg max-w-2xl leading-relaxed">
+                        ¡El torneo infantil más esperado de la ciudad! Organizado por el <strong>Colegio Mis Monachos</strong>. Un espacio formativo y competitivo en las canchas sintéticas <strong>Ocho Gol</strong>.
+                    </p>
+
+                    <!-- Key Event Pills -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-left">
+                        <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20">
+                            <i class="fa-solid fa-calendar-days text-yellow-400 text-lg mb-1"></i>
+                            <p class="text-xs text-slate-200">Fechas</p>
+                            <p class="text-sm font-bold text-white">13, 20 y 27 Sep</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20">
+                            <i class="fa-solid fa-clock text-yellow-400 text-lg mb-1"></i>
+                            <p class="text-xs text-slate-200">Horario</p>
+                            <p class="text-sm font-bold text-white">4:00 pm - 6:00 pm</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 col-span-2 sm:col-span-1">
+                            <i class="fa-solid fa-location-dot text-yellow-400 text-lg mb-1"></i>
+                            <p class="text-xs text-slate-200">Lugar</p>
+                            <p class="text-sm font-bold text-white">Canchas Ocho Gol</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
+                        <a href="#inscripcion" class="bg-yellow-400 hover:bg-yellow-300 text-green-950 font-extrabold text-base px-8 py-3.5 rounded-xl shadow-xl hover:scale-105 transition transform flex items-center space-x-2">
+                            <i class="fa-solid fa-futbol text-green-700"></i>
+                            <span>Llenar Planilla de Inscripción</span>
+                        </a>
+                        <a href="#reglamento" class="bg-white/20 hover:bg-white/30 text-white font-bold text-base px-6 py-3.5 rounded-xl border border-white/40 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Ver Reglamento</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Host Badge / Emblem Banner -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative bg-white/95 text-slate-800 p-8 rounded-3xl shadow-2xl border-4 border-yellow-400 max-w-sm text-center">
+                        <div class="w-24 h-24 mx-auto mb-4 bg-white rounded-full flex items-center justify-center text-slate-800 text-4xl shadow-lg border-4 border-red-500 overflow-hidden p-2">
+                            <img src="https://i.ibb.co/jPhKS08q/logo.png" onerror="this.onerror=null; this.src='https://ibb.co/jPhKS08q';" alt="Logo Mis Monachos" class="w-full h-full object-contain">
+                        </div>
+                        <span class="inline-block bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full text-xs mb-2">Colegio Organizador</span>
+                        <h2 class="text-2xl font-fredoka font-bold text-green-800">COLEGIO MIS MONACHOS</h2>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            "Formando líderes y promoviendo valores a través del deporte y el juego limpio."
+                        </p>
+                        <hr class="my-4 border-slate-200">
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <p><i class="fa-solid fa-envelope text-red-500 mr-1"></i> ol.mismonachos@hotmail.com</p>
+                            <p><i class="fa-solid fa-phone text-green-600 mr-1"></i> 312 561 4798 / 300 767 4405</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="video-promo" class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-yellow-400 font-bold text-xs uppercase tracking-widest bg-yellow-400/10 px-3 py-1 rounded-full border border-yellow-400/20">
+                    Video Promocional
+                </span>
+                <h2 class="text-3xl font-fredoka font-bold text-white mt-3">
+                    ¡Siente la Pasión del Festival!
+                </h2>
+                <p class="text-slate-400 text-sm mt-2">
+                    Espacio dedicado al video promocional en formato vertical (9:16). Puedes reproducir el video de muestra o cargar tu propio archivo de video.
+                </p>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <!-- Vertical Video Frame -->
+                <div class="vertical-video-container bg-slate-800 border-4 border-slate-700 relative group">
+                    
+                    <!-- Video Tag -->
+                    <video id="promoVideo" class="w-full h-full object-cover" loop playsinline poster="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-boys-playing-football-in-a-grass-field-41528-large.mp4" type="video/mp4">
+                        Tu navegador no soporta el reproductor de video.
+                    </video>
+
+                    <!-- Overlay Controls on Hover/Touch -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 flex flex-col justify-between p-4 pointer-events-none">
+                        <!-- Top Bar inside video -->
+                        <div class="flex justify-between items-center pointer-events-auto">
+                            <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center space-x-1">
+                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                <span>Reel Promocional</span>
+                            </span>
+                            <button id="muteBtn" onclick="toggleMute()" class="w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition">
+                                <i class="fa-solid fa-volume-xmark text-xs" id="muteIcon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Center Play/Pause Big Button -->
+                        <div class="self-center pointer-events-auto">
+                            <button id="playPauseBtn" onclick="togglePlay()" class="w-16 h-16 rounded-full bg-yellow-400/90 hover:bg-yellow-400 text-green-950 flex items-center justify-center text-2xl shadow-xl transition transform hover:scale-110">
+                                <i class="fa-solid fa-play" id="playIcon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Bottom Information Overlay -->
+                        <div class="pointer-events-auto text-left space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-white text-xs flex items-center justify-center font-bold overflow-hidden p-0.5 border border-yellow-400">
+                                    <img src="https://i.ibb.co/jPhKS08q/logo.png" onerror="this.onerror=null; this.src='https://ibb.co/jPhKS08q';" alt="Logo" class="w-full h-full object-contain">
+                                </div>
+                                <span class="text-xs font-bold text-white">Colegio Mis Monachos</span>
+                            </div>
+                            <p class="text-xs text-slate-200 line-clamp-2">
+                                ¡Inscribe a tu equipo en el XIX Festival Futbolístico Estrellitas del Deporte! ⚽🏆
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Video URL Option -->
+                <div class="mt-6 w-full max-w-md bg-slate-800 p-4 rounded-2xl border border-slate-700 text-xs">
+                    <label class="block text-slate-300 font-semibold mb-1">
+                        <i class="fa-solid fa-link text-yellow-400 mr-1"></i> Cambiar video promocional (URL MP4):
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="url" id="customVideoUrl" placeholder="https://ejemplo.com/video-vertical.mp4" class="flex-1 bg-slate-900 text-white px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-yellow-400">
+                        <button onclick="changeVideoSrc()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold px-4 py-2 rounded-lg transition">
+                            Cargar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="invitacion" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm relative overflow-hidden">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-6 mb-6 gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-green-700 uppercase tracking-widest">Comunicado Oficial</span>
+                        <h2 class="text-2xl sm:text-3xl font-fredoka font-bold text-slate-900">Carta de Invitación</h2>
+                    </div>
+                    <div class="text-right text-xs text-slate-500">
+                        <p class="font-bold text-slate-700">Neiva, Agosto de 2026</p>
+                        <p>Colegio Mis Monachos</p>
+                    </div>
+                </div>
+
+                <div class="prose prose-slate max-w-none text-slate-700 text-sm sm:text-base leading-relaxed space-y-4">
+                    <p class="font-bold text-slate-900">
+                        Señores: Rectores, Coordinadores de Área de Deportes y Entrenadores. <br>
+                        <span class="text-slate-600 font-normal">Ciudad - Neiva, Huila</span>
+                    </p>
+
+                    <p><strong>Cordial Saludo:</strong></p>
+
+                    <p>
+                        Es un gusto para nosotros manifestarles que vuelve nuestro gran festival futbolístico con su <strong>XIX Temporada</strong>, la cual se va a desarrollar en las fechas correspondientes al <strong>13, 20 y 27 de Septiembre</strong>, en el horario de <strong>4:00 a 6:00 pm</strong>. Este maravilloso evento tendrá lugar en las <strong>canchas sintéticas Ocho Gol</strong>.
+                    </p>
+
+                    <p>
+                        Para nosotros es muy importante poder contar con la compañía de sus grupos deportivos en las categorías: <span class="bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded">Pony</span>, <span class="bg-yellow-100 text-yellow-800 font-bold px-2 py-0.5 rounded">Alevines</span> y <span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded">Baby</span>.
+                    </p>
+
+                    <p>
+                        Dicho evento busca distinguir en sus jugadores y cuerpos técnicos lo idóneo frente a lo deportivo. Adicional a esto, generar espacios en los que nuestros jugadores formen lazos de amistad, aprendan a solucionar las diversas dificultades que se puedan presentar, así como la importancia de aprender a ganar y entrenar habilidades para ser mejores cada día.
+                    </p>
+
+                    <p>
+                        Hemos alcanzado nuestro XIX festival y nos sentimos honrados por la gran acogida que ha tenido nuestro evento deportivo. Esperamos contar nuevamente con su compañía.
+                    </p>
+                </div>
+
+                <!-- Signatures -->
+                <div class="mt-10 pt-6 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-8 text-center sm:text-left">
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">SONIA SOLANO FLÓREZ</p>
+                        <p class="text-xs text-slate-500">Directora General</p>
+                        <p class="text-xs font-semibold text-green-700 mt-1">Colegio Mis Monachos</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">ANDRÉS FELIPE GALÉS CHARRY</p>
+                        <p class="text-xs text-slate-500">Coordinador de Deportes</p>
+                        <p class="text-xs font-semibold text-green-700 mt-1">Cel: 312 561 4798 / 300 767 4405</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="categorias" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Clasificación</span>
+                <h2 class="text-3xl font-fredoka font-bold text-slate-900 mt-2">Categorías y Edades Admitidas</h2>
+                <p class="text-slate-600 text-sm mt-2">Ten en cuenta los grados y edades máximas para la inscripción de tu delegación.</p>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Category 1: Alevines -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-yellow-400 hover:shadow-lg transition">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center font-bold text-lg">1</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full">5 y 6 Años Max.</span>
+                    </div>
+                    <h3 class="text-2xl font-fredoka font-bold text-slate-900">ALEVINES</h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Nivel Inicial / Preescolar</p>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Grados: <strong>Transición y Primero</strong></li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Carácter formativo y lúdico</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Máximo 10 jugadores inscritos</li>
+                    </ul>
+                </div>
+
+                <!-- Category 2: Pony -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-green-600 hover:shadow-lg transition relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="w-10 h-10 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-lg">2</span>
+                        <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full">7 y 8 Años Max.</span>
+                    </div>
+                    <h3 class="text-2xl font-fredoka font-bold text-slate-900">PONY</h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Nivel Primaria Baja</p>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Grados: <strong>Primero, Segundo y Tercero</strong></li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Amonestaciones correctivas de 5 min</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Máximo 10 jugadores inscritos</li>
+                    </ul>
+                </div>
+
+                <!-- Category 3: Baby -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-red-600 hover:shadow-lg transition">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-lg">3</span>
+                        <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">9 y 10 Años Max.</span>
+                    </div>
+                    <h3 class="text-2xl font-fredoka font-bold text-slate-900">BABY</h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">Nivel Primaria Alta</p>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Grados: <strong>Cuarto y Quinto</strong></li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Reglamento con tarjetas FIFA</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Máximo 10 jugadores inscritos</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Awards Section Grid -->
+            <div class="mt-12 bg-gradient-to-r from-green-900 to-emerald-950 rounded-3xl p-8 text-white shadow-xl">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <h3 class="text-2xl font-fredoka font-bold text-yellow-400">Premiación e Incentivos</h3>
+                    <p class="text-slate-200 text-xs mt-1">Reconocimiento al esfuerzo, la disciplina y el trabajo en equipo</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                        <i class="fa-solid fa-medal text-yellow-400 text-3xl mb-2"></i>
+                        <h4 class="font-bold text-sm">Medallas para Todos</h4>
+                        <p class="text-xs text-slate-300 mt-1">Medalla de participación a cada jugador inscrito (Máx. 10 por categoría).</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                        <i class="fa-solid fa-trophy text-yellow-400 text-3xl mb-2"></i>
+                        <h4 class="font-bold text-sm">Trofeo Institucional</h4>
+                        <p class="text-xs text-slate-300 mt-1">1 Trofeo de reconocimiento por colegio participante.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                        <i class="fa-solid fa-bag-shopping text-yellow-400 text-3xl mb-2"></i>
+                        <h4 class="font-bold text-sm">Morral e Hidratación</h4>
+                        <p class="text-xs text-slate-300 mt-1">Entrega de morral e hidratante en la inauguración por jugador.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                        <i class="fa-solid fa-star text-yellow-400 text-3xl mb-2"></i>
+                        <h4 class="font-bold text-sm">Goleador y Valla</h4>
+                        <p class="text-xs text-slate-300 mt-1">Balón al máximo goleador y guantes al arquero menos vencido.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="costos" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Investment Card -->
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Inversión</span>
+                    <h3 class="text-2xl font-fredoka font-bold text-slate-900 mt-2">Costo de Inscripción</h3>
+                    
+                    <div class="my-6 p-6 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl border border-green-200">
+                        <p class="text-xs text-green-800 font-bold uppercase">Valor por Categoría</p>
+                        <div class="text-3xl sm:text-4xl font-fredoka font-extrabold text-green-900 mt-1">
+                            $300.000 <span class="text-sm font-normal text-slate-600">Mcte</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1">O <strong>$35.000 COP</strong> por jugador individual (incluye hidratación).</p>
+                    </div>
+
+                    <h4 class="font-bold text-slate-800 text-sm mb-2">¿Qué incluye la inscripción?</h4>
+                    <ul class="space-y-2 text-xs sm:text-sm text-slate-600 mb-6">
+                        <li class="flex items-start"><i class="fa-solid fa-bottle-water text-green-600 mr-2 mt-0.5"></i> <span><strong>Fecha 1:</strong> Bebida hidratante + agua para cada deportista.</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-droplet text-green-600 mr-2 mt-0.5"></i> <span><strong>Fechas 2 y 3:</strong> Agua al finalizar cada tiempo de juego.</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-whistle text-green-600 mr-2 mt-0.5"></i> <span>Servicio de juzgamiento (Arbitraje) y alquiler de canchas sintéticas.</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-award text-green-600 mr-2 mt-0.5"></i> <span>Premiación completa (Medallas + Trofeo Institucional).</span></li>
+                    </ul>
+
+                    <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-xl">
+                        <h5 class="font-bold text-yellow-900 text-xs uppercase">Fechas Límite Importantes</h5>
+                        <ul class="text-xs text-yellow-800 mt-1 space-y-1">
+                            <li>• <strong>Recepción de planillas:</strong> Hasta el viernes 30 de agosto.</li>
+                            <li>• <strong>Cancelación de inscripción:</strong> Hasta el viernes 6 de septiembre.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Rules Card -->
+                <div id="reglamento" class="bg-slate-50 border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Reglamento</span>
+                    <h3 class="text-2xl font-fredoka font-bold text-slate-900 mt-2">Normativa del Torneo</h3>
+
+                    <div class="mt-4 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed max-h-[420px] overflow-y-auto pr-2">
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-list-check text-green-600 mr-1"></i> Planilla de Inscripción:</strong>
+                            Debe presentarse correctamente diligenciada, sin tachones y con letra clara. Se permiten cambios hasta la 2ª fecha siempre que el jugador sustituido no haya actuado.
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-stopwatch text-green-600 mr-1"></i> Duración del Partido:</strong>
+                            40 minutos en total (2 tiempos de 15 minutos con 5 minutos de descanso).
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-shirt text-green-600 mr-1"></i> Uniforme e Implementos:</strong>
+                            Presentación con uniforme deportivo distintivo de la institución, medias largas y canilleras obligatorias.
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-hand-holding-medical text-green-600 mr-1"></i> Salud y Enfermería:</strong>
+                            El torneo cuenta con 2 auxiliares de enfermería para atención primaria durante la jornada.
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-square-poll-vertical text-green-600 mr-1"></i> Sanciones y Tarjetas:</strong>
+                            En Alevines y Ponys las amonestaciones son correctivas (sustitución obligatoria por 5 min). En Babys rige reglamento FIFA (amarillas y rojas).
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="programacion" class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <span class="text-yellow-400 font-bold text-xs uppercase tracking-widest bg-yellow-400/10 px-3 py-1 rounded-full border border-yellow-400/20">Fixture del Festival</span>
+                <h2 class="text-3xl font-fredoka font-bold text-white mt-2">Programación de Partidos</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">Consulta los horarios y enfrentamientos programados por fecha.</p>
+            </div>
+
+            <!-- Date Selector Tabs -->
+            <div class="flex justify-center space-x-2 sm:space-x-4 mb-8">
+                <button onclick="showSchedule('f1')" id="tab-f1" class="schedule-tab active bg-yellow-400 text-slate-950 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
+                    Fecha 1 (20-09)
+                </button>
+                <button onclick="showSchedule('f2')" id="tab-f2" class="schedule-tab bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
+                    Fecha 2 (27-09)
+                </button>
+                <button onclick="showSchedule('f3')" id="tab-f3" class="schedule-tab bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition">
+                    Fecha 3 (04-10)
+                </button>
+            </div>
+
+            <!-- Schedule Contents -->
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- Date 1 Content -->
+                <div id="sched-f1" class="schedule-content space-y-4">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 flex justify-between items-center text-xs font-bold text-yellow-400">
+                        <span><i class="fa-solid fa-star mr-1"></i> INAUGURACIÓN DEL FESTIVAL</span>
+                        <span>Viernes 20 de Septiembre</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-yellow-400 font-bold block mb-2">Cancha #3 - Alevines</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Monachos vs. Anglocanadiense</p>
+                                <p class="bg-slate-900 p-2 rounded">6:00 pm: Castillo del Norte vs. Educakids</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-green-400 font-bold block mb-2">Cancha #2 - Ponys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Monachos vs. Educakids</p>
+                                <p class="bg-slate-900 p-2 rounded">6:00 pm: Castillo del Norte vs. Anglocanadiense</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-red-400 font-bold block mb-2">Cancha #1 - Babys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Greenhill vs. Anglocanadiense</p>
+                                <p class="bg-slate-900 p-2 rounded">6:00 pm: Monachos vs. Castillo del Norte</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date 2 Content -->
+                <div id="sched-f2" class="schedule-content hidden space-y-4">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 flex justify-between items-center text-xs font-bold text-yellow-400">
+                        <span><i class="fa-solid fa-futbol mr-1"></i> SEGUNDA JORNADA</span>
+                        <span>Viernes 27 de Septiembre</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-yellow-400 font-bold block mb-2">Cancha #3 - Alevines</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Monachos vs. Educakids</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Castillo del Norte vs. Anglocanadiense</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-green-400 font-bold block mb-2">Cancha #2 - Ponys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Educakids vs. Anglocanadiense</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Monachos vs. Castillo del Norte</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-red-400 font-bold block mb-2">Cancha #1 - Babys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Monachos vs. Anglocanadiense</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Castillo del Norte vs. Greenhill</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date 3 Content -->
+                <div id="sched-f3" class="schedule-content hidden space-y-4">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 flex justify-between items-center text-xs font-bold text-yellow-400">
+                        <span><i class="fa-solid fa-trophy mr-1"></i> FECHA FINAL Y PREMIACIÓN (6:00 PM)</span>
+                        <span>Viernes 04 de Octubre</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-yellow-400 font-bold block mb-2">Cancha #3 - Alevines</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Anglocanadiense vs. Educakids</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Monachos vs. Castillo del Norte</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-green-400 font-bold block mb-2">Cancha #2 - Ponys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Monachos vs. Anglocanadiense</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Educakids vs. Castillo del Norte</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <span class="text-red-400 font-bold block mb-2">Cancha #1 - Babys</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p class="bg-slate-900 p-2 rounded">4:00 pm: Monachos vs. Greenhill</p>
+                                <p class="bg-slate-900 p-2 rounded">5:00 pm: Anglocanadiense vs. Castillo del Norte</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="inscripcion" class="py-16 bg-slate-100">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200">
+                
+                <!-- Form Header -->
+                <div class="text-center pb-8 border-b border-slate-200">
+                    <div class="inline-flex items-center space-x-2 bg-green-100 text-green-800 font-bold px-3 py-1 rounded-full text-xs uppercase mb-2">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>Planilla Oficial de Inscripción</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-fredoka font-bold text-slate-900">
+                        FORMATO DE INSCRIPCIÓN DE DELEGACIÓN
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                        Diligencia la información de tu colegio y la nómina de hasta 10 estudiantes. Al finalizar se generará la planilla en formato PDF direccionada a <strong>ol.mismonachos@hotmail.com</strong>.
+                    </p>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="rosterForm" onsubmit="generatePDFAndSend(event)" class="mt-8 space-y-8">
+                    
+                    <!-- School & Category Header Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Nombre del Colegio Participante *
+                            </label>
+                            <input type="text" id="schoolName" required placeholder="Ej: Colegio Gimnasio Campestre" class="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm font-medium">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Categoría a Inscribir *
+                            </label>
+                            <select id="categorySelect" required onchange="updateCategoryInfo()" class="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm font-semibold text-slate-800">
+                                <option value="ALEVINES">ALEVINES (5 y 6 Años / Transición - 1°)</option>
+                                <option value="PONY">PONY (7 y 8 Años / 1° - 2° - 3°)</option>
+                                <option value="BABY">BABY (9 y 10 Años / 4° - 5°)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Nombre del Director Técnico / Delgado *
+                            </label>
+                            <input type="text" id="coachName" required placeholder="Ej: Prof. Luis Rodríguez" class="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                    Teléfono Contacto *
+                                </label>
+                                <input type="tel" id="coachPhone" required placeholder="300 000 0000" class="w-full bg-white px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                    Correo Electrónico *
+                                </label>
+                                <input type="email" id="coachEmail" required placeholder="deportes@colegio.edu.co" class="w-full bg-white px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:outline-none text-sm">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Player Roster Table -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <div>
+                                <h3 class="font-fredoka font-bold text-lg text-slate-900">Nómina de Deportistas Inscritos</h3>
+                                <p class="text-xs text-slate-500">Máximo 10 estudiantes por categoría según reglamento.</p>
+                            </div>
+                            <div class="text-xs font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                                Jugadores: <span id="playerCountText">10</span> / 10
+                            </div>
+                        </div>
+
+                        <!-- Table Container with static guaranteed 10 rows -->
+                        <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-slate-800 text-white text-xs font-bold uppercase">
+                                        <th class="p-3 text-center w-12">#</th>
+                                        <th class="p-3">Nombre Completo del Estudiante</th>
+                                        <th class="p-3 w-32">Grado</th>
+                                        <th class="p-3 w-28 text-center">Edad</th>
+                                        <th class="p-3 w-28 text-center">Doc. Adjunto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="playerTableBody" class="divide-y divide-slate-200 text-sm bg-white">
+                                    <!-- 10 Static Pre-rendered Rows for 100% Instant Visibility -->
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">1</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 1" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">2</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 2" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">3</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 3" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">4</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 4" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">5</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 5" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">6</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 6" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">7</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 7" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">8</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 8" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">9</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 9" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="p-3 text-center font-bold text-slate-500 text-xs">10</td>
+                                        <td class="p-2"><input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante 10" required></td>
+                                        <td class="p-2"><input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required></td>
+                                        <td class="p-2 text-center"><input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required></td>
+                                        <td class="p-2 text-center"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4"><span class="ml-1 text-[10px] text-slate-500">Sí</span></label></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Important Requirement Banner -->
+                        <div class="mt-5 p-4 sm:p-5 bg-gradient-to-r from-red-100 via-rose-50 to-red-100 border-4 border-red-600 rounded-2xl shadow-xl animate-alert-pulse flex items-start sm:items-center space-x-3 text-red-900">
+                            <div class="bg-red-600 text-white p-3 rounded-xl shadow-lg shrink-0 animate-bounce">
+                                <i class="fa-solid fa-triangle-exclamation text-2xl sm:text-3xl"></i>
+                            </div>
+                            <div class="leading-relaxed">
+                                <span class="bg-red-600 text-white font-black text-sm sm:text-base px-3 py-1 rounded-lg uppercase tracking-wider inline-block mb-1 sm:mb-0 mr-2 shadow-md">
+                                    ¡NOTA IMPORTANTE!
+                                </span>
+                                <span class="text-red-950 font-black text-sm sm:text-lg leading-snug">
+                                    Por favor anexar obligatoriamente a la planilla fotocopia del documento de identificación de cada deportista al momento de la entrega en la secretaría del Colegio Mis Monachos.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-extrabold text-base px-8 py-4 rounded-xl shadow-lg hover:shadow-green-600/30 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-3">
+                            <i class="fa-solid fa-file-pdf text-yellow-300 text-xl"></i>
+                            <span>GENERAR PLANILLA EN PDF Y ENVIAR</span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+
+    <div id="pdfModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative text-center">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-3xl mb-4">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <h3 class="text-2xl font-fredoka font-bold text-slate-900">¡Planilla Generada y Descargada!</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-2">
+                El archivo PDF oficial de inscripción ya se ha descargado automáticamente en tu dispositivo.
+            </p>
+
+            <div class="my-5 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs space-y-2">
+                <p><strong>Correo Principal:</strong> <span class="text-green-700 font-bold">ol.mismonachos@hotmail.com</span></p>
+                <p><strong>Correo Secundario:</strong> <span class="text-green-700 font-bold">juancamilo.js3@gmail.com</span></p>
+                <p><strong>Colegio:</strong> <span id="modalSchoolName">-</span></p>
+                <p><strong>Categoría:</strong> <span id="modalCategory">-</span></p>
+            </div>
+
+            <div class="space-y-3">
+                <!-- Principal Button: Opens Gmail Web Direct Compose -->
+                <button id="gmailWebBtn" onclick="openGmailWeb()" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold py-3.5 px-6 rounded-xl shadow-lg transition flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-brands fa-google text-yellow-300 text-lg"></i>
+                    <span>ABRIR GMAIL Y ADJUNTAR PDF</span>
+                </button>
+
+                <button id="emailMailtoBtn" type="button" onclick="openDefaultMailClient()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 px-6 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-paper-plane text-yellow-400"></i>
+                    <span>ABRIR APLICACIÓN DE CORREO</span>
+                </button>
+
+                <button id="copyEmailBtn" type="button" onclick="copyEmailData()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold py-2.5 px-6 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>COPIAR DATOS DEL CORREO</span>
+                </button>
+
+                <label class="block w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 px-6 rounded-xl transition text-xs cursor-pointer text-center">
+                    <i class="fa-solid fa-paperclip mr-2"></i> Seleccionar PDF descargado para verificar
+                    <input id="pdfVerifyInput" type="file" accept="application/pdf" class="hidden" onchange="verifySelectedPdf(this)">
+                </label>
+                <p id="pdfVerifyStatus" class="text-[11px] text-slate-500"></p>
+
+                <button onclick="downloadPDFAgain()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-6 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Descargar Copia PDF Nuevamente</span>
+                </button>
+            </div>
+
+            <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
+                <i class="fa-solid fa-paperclip text-red-500 mr-1"></i> <strong>Siguiente paso:</strong> Haz clic en <strong>Abrir en Gmail Web</strong>, adjunta la planilla PDF que acaba de descargarse y presiona Enviar.
+            </p>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+    <footer class="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-slate-800">
+                
+                <!-- Host Details -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 text-white font-fredoka font-bold text-xl">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center p-1 border border-yellow-400 overflow-hidden">
+                            <img src="https://i.ibb.co/jPhKS08q/logo.png" onerror="this.onerror=null; this.src='https://ibb.co/jPhKS08q';" alt="Logo Mis Monachos" class="w-full h-full object-contain">
+                        </div>
+                        <span>COLEGIO MIS MONACHOS</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Colegio anfitrión del XIX Festival Futbolístico Estrellitas del Deporte. Formación integral, deportividad y valores en Neiva, Huila.
+                    </p>
+                </div>
+
+                <!-- Contact Direct Numbers -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3">Líneas de Atención</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex items-center">
+                            <i class="fa-solid fa-phone text-green-500 w-5"></i>
+                            <span>312 561 4798 (Lic. Luis Rodríguez)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa-solid fa-phone text-green-500 w-5"></i>
+                            <span>300 767 4405 (Colegio Mis Monachos)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa-solid fa-envelope text-red-500 w-5"></i>
+                            <a href="mailto:ol.mismonachos@hotmail.com" class="hover:underline text-slate-200">ol.mismonachos@hotmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Venue Info -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-3">Sede Deportiva del Evento</h4>
+                    <p class="text-xs text-slate-300">Canchas Sintéticas Ocho Gol</p>
+                    <p class="text-xs text-slate-400 mt-1">Neiva, Huila - Colombia</p>
+                    <p class="text-[11px] text-yellow-400 mt-2 font-semibold">
+                        <i class="fa-solid fa-calendar text-xs mr-1"></i> 13, 20 y 27 de Septiembre (4:00 pm - 6:00 pm)
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="pt-8 text-center text-xs text-slate-500">
+                <p>&copy; 2026 Colegio Mis Monachos. XIX Festival Futbolístico Estrellitas del Deporte. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Category change handler (ensures no reference errors occur)
+        function updateCategoryInfo() {
+            const select = document.getElementById('categorySelect');
+            console.log("Categoría seleccionada:", select ? select.value : '');
+        }
+
+        // Initialize table if tbody is empty (bulletproof fallback)
+        function initRosterTable() {
+            const tbody = document.getElementById('playerTableBody');
+            if (tbody && tbody.children.length === 0) {
+                renderPlayerRows(10);
+            }
+        }
+
+        // Render table rows for student players
+        function renderPlayerRows(count) {
+            const tbody = document.getElementById('playerTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            for (let i = 1; i <= count; i++) {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-slate-500 text-xs">${i}</td>
+                    <td class="p-2">
+                        <input type="text" class="player-name w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs font-medium" placeholder="Nombre completo del estudiante ${i}" required>
+                    </td>
+                    <td class="p-2">
+                        <input type="text" class="player-grade w-full bg-slate-50 focus:bg-white px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs" placeholder="Grado" required>
+                    </td>
+                    <td class="p-2 text-center">
+                        <input type="number" min="4" max="12" class="player-age w-full bg-slate-50 focus:bg-white px-2 py-1.5 rounded-lg border border-slate-300 focus:ring-1 focus:ring-green-500 text-xs text-center" placeholder="Edad" required>
+                    </td>
+                    <td class="p-2 text-center">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="player-doc rounded border-slate-300 text-green-600 focus:ring-green-500 w-4 h-4">
+                            <span class="ml-1 text-[10px] text-slate-500">Sí</span>
+                        </label>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+            const countText = document.getElementById('playerCountText');
+            if (countText) countText.innerText = count;
+        }
+
+        // Run initialization checks immediately and on DOM load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRosterTable);
+        } else {
+            initRosterTable();
+        }
+
+        // Schedule Tab Switcher
+        function showSchedule(tabId) {
+            document.querySelectorAll('.schedule-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.schedule-tab').forEach(btn => {
+                btn.classList.remove('bg-yellow-400', 'text-slate-950');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            const schedEl = document.getElementById('sched-' + tabId);
+            if (schedEl) schedEl.classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-yellow-400', 'text-slate-950');
+            }
+        }
+
+        // Video Player Logic
+        const video = document.getElementById('promoVideo');
+        const playIcon = document.getElementById('playIcon');
+        const muteIcon = document.getElementById('muteIcon');
+
+        function togglePlay() {
+            if (!video) return;
+            if (video.paused) {
+                video.play();
+                if (playIcon) playIcon.className = "fa-solid fa-pause";
+            } else {
+                video.pause();
+                if (playIcon) playIcon.className = "fa-solid fa-play";
+            }
+        }
+
+        function toggleMute() {
+            if (!video) return;
+            video.muted = !video.muted;
+            if (muteIcon) {
+                muteIcon.className = video.muted ? "fa-solid fa-volume-xmark text-xs" : "fa-solid fa-volume-high text-xs";
+            }
+        }
+
+        function changeVideoSrc() {
+            const urlInput = document.getElementById('customVideoUrl').value.trim();
+            if (urlInput && video) {
+                video.src = urlInput;
+                video.load();
+                video.play();
+                if (playIcon) playIcon.className = "fa-solid fa-pause";
+            }
+        }
+
+        const APP_CONFIG = Object.freeze({
+            organizerEmail: 'ol.mismonachos@hotmail.com',
+            secondaryEmail: 'juancamilo.js3@gmail.com',
+            gmailEmail: 'juancamilo.js3@gmail.com'
+        });
+
+        let currentGeneratedDoc = null;
+        let currentPdfBlob = null;
+        let currentPdfFilename = 'Planilla_Inscripcion_Festival_Futbol.pdf';
+        let currentFormData = null;
+        let gmailComposeUrl = '';
+
+        function showToast(message, type = 'info') {
+            const wrap = document.getElementById('toastWrap');
+            if (!wrap) return;
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<div class="font-bold text-sm mb-1">${type === 'success' ? 'Listo' : type === 'error' ? 'Revisa esto' : 'Información'}</div><div class="text-xs text-slate-600 leading-relaxed">${message}</div>`;
+            wrap.appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }
+
+        function getFormData() {
+            const schoolName = document.getElementById('schoolName')?.value.trim();
+            const category = document.getElementById('categorySelect')?.value;
+            const coachName = document.getElementById('coachName')?.value.trim();
+            const coachPhone = document.getElementById('coachPhone')?.value.trim();
+            const coachEmail = document.getElementById('coachEmail')?.value.trim();
+
+            const players = Array.from(document.querySelectorAll('#playerTableBody tr')).map((tr, index) => ({
+                number: index + 1,
+                name: tr.querySelector('.player-name')?.value.trim() || '',
+                grade: tr.querySelector('.player-grade')?.value.trim() || '',
+                age: tr.querySelector('.player-age')?.value.trim() || '',
+                documentAttached: Boolean(tr.querySelector('.player-doc')?.checked)
+            }));
+
+            return { schoolName, category, coachName, coachPhone, coachEmail, players };
+        }
+
+        function validateRegistration(data) {
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            const requiredFields = ['schoolName', 'categorySelect', 'coachName', 'coachPhone', 'coachEmail'];
+            let firstInvalid = null;
+            for (const id of requiredFields) {
+                const el = document.getElementById(id);
+                if (!el || !el.value.trim()) {
+                    el?.classList.add('field-error');
+                    firstInvalid ||= el;
+                }
+            }
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                showToast('Completa todos los datos del colegio y del delegado antes de generar la planilla.', 'error');
+                return false;
+            }
+
+            const invalidPlayer = data.players.find(p => !p.name || !p.grade || !p.age);
+            if (invalidPlayer) {
+                showToast(`Completa los datos del deportista #${invalidPlayer.number}.`, 'error');
+                return false;
+            }
+
+            const ageRules = { ALEVINES: [5, 6], PONY: [7, 8], BABY: [9, 10] };
+            const [minAge, maxAge] = ageRules[data.category] || [4, 12];
+            const badAge = data.players.find(p => Number(p.age) < minAge || Number(p.age) > maxAge);
+            if (badAge) {
+                showToast(`La edad del deportista #${badAge.number} no corresponde a la categoría ${data.category}. Rango permitido: ${minAge}-${maxAge} años.`, 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function sanitizeFilename(value) {
+            return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9-_]+/g, '_').replace(/^_+|_+$/g, '');
+        }
+
+        function buildPdf(data) {
+            if (!window.jspdf?.jsPDF) throw new Error('La librería PDF no está disponible.');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            doc.setFillColor(21, 128, 61);
+            doc.rect(0, 0, 210, 32, 'F');
+            doc.setFillColor(220, 38, 38);
+            doc.rect(0, 32, 210, 4, 'F');
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(15);
+            doc.text('COLEGIO MIS MONACHOS', 105, 12, { align: 'center' });
+            doc.setFontSize(11);
+            doc.setTextColor(250, 204, 21);
+            doc.text('XIX FESTIVAL FUTBOLÍSTICO "ESTRELLITAS DEL DEPORTE"', 105, 20, { align: 'center' });
+            doc.setFontSize(9);
+            doc.setTextColor(255, 255, 255);
+            doc.text('PLANILLA OFICIAL DE INSCRIPCIÓN DE DELEGACIÓN', 105, 27, { align: 'center' });
+
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(12, 40, 186, 32, 2, 2, 'F');
+            doc.setDrawColor(203, 213, 225);
+            doc.roundedRect(12, 40, 186, 32, 2, 2, 'D');
+
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('DATOS DE LA DELEGACIÓN PARTICIPANTE', 16, 47);
+            doc.setFontSize(8.5);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Institución Educativa / Colegio: ${data.schoolName.toUpperCase()}`, 16, 54);
+            doc.text(`Categoría Inscrita: ${data.category}`, 16, 60);
+            doc.text(`Director Técnico / Delegado: ${data.coachName}`, 16, 66);
+            doc.text(`Teléfono Contacto: ${data.coachPhone}   |   Correo Electrónico: ${data.coachEmail}`, 16, 71);
+
+            const tableData = data.players.map(p => [p.number, p.name, p.grade, p.age, p.documentAttached ? 'SÍ' : 'NO']);
+            doc.autoTable({
+                startY: 76,
+                head: [['#', 'Nombre Completo del Estudiante', 'Grado', 'Edad', 'Doc. Adjunto']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [21, 128, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5, halign: 'center' },
+                columnStyles: { 0: { halign: 'center', cellWidth: 10 }, 1: { cellWidth: 100 }, 2: { halign: 'center', cellWidth: 30 }, 3: { halign: 'center', cellWidth: 20 }, 4: { halign: 'center', cellWidth: 26 } },
+                styles: { fontSize: 8, cellPadding: 2 }
+            });
+
+            let finalY = (doc.lastAutoTable?.finalY || 76) + 6;
+            if (finalY > 245) {
+                doc.addPage();
+                finalY = 20;
+            }
+
+            doc.setFillColor(254, 242, 242);
+            doc.rect(12, finalY, 186, 19, 'F');
+            doc.setDrawColor(220, 38, 38);
+            doc.setLineWidth(0.8);
+            doc.rect(12, finalY, 186, 19, 'D');
+            doc.setFontSize(8);
+            doc.setTextColor(185, 28, 28);
+            doc.setFont('helvetica', 'bold');
+            doc.text('¡NOTA IMPORTANTE REQUERIDA!', 16, finalY + 5);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            doc.text('Anexar obligatoriamente fotocopia del documento de identidad de cada deportista.', 16, finalY + 9);
+            doc.text(`Enviar la planilla a ${APP_CONFIG.organizerEmail} o ${APP_CONFIG.secondaryEmail}.`, 16, finalY + 13);
+            doc.text('La documentación física también debe entregarse en la secretaría del Colegio Mis Monachos.', 16, finalY + 17);
+
+            const sigY = Math.min(finalY + 34, 272);
+            doc.setLineWidth(0.4);
+            doc.setDrawColor(100, 116, 139);
+            doc.line(20, sigY, 85, sigY);
+            doc.line(125, sigY, 190, sigY);
+            doc.setFontSize(8);
+            doc.setTextColor(30, 41, 59);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Firma Director Técnico / Delegado', 52.5, sigY + 5, { align: 'center' });
+            doc.text('SONIA SOLANO FLÓREZ', 157.5, sigY + 5, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.text(data.schoolName.toUpperCase(), 52.5, sigY + 9, { align: 'center' });
+            doc.text('Directora General - Colegio Mis Monachos', 157.5, sigY + 9, { align: 'center' });
+
+            const pages = doc.getNumberOfPages();
+            for (let page = 1; page <= pages; page++) {
+                doc.setPage(page);
+                doc.setFontSize(7);
+                doc.setTextColor(148, 163, 184);
+                doc.text(`XIX Festival Futbolístico Estrellitas del Deporte - Página ${page}/${pages}`, 105, 288, { align: 'center' });
+            }
+            return doc;
+        }
+
+        async function generatePDFAndSend(event) {
+            event.preventDefault();
+            const submitBtn = document.querySelector('#rosterForm button[type="submit"]');
+            try {
+                const data = getFormData();
+                if (!validateRegistration(data)) return;
+                submitBtn?.classList.add('btn-loading');
+                if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-yellow-300 text-xl"></i><span>GENERANDO PDF...</span>';
+
+                const doc = buildPdf(data);
+                const blob = doc.output('blob');
+                const filename = `Planilla_Inscripcion_${sanitizeFilename(data.category)}_${sanitizeFilename(data.schoolName) || 'Colegio'}.pdf`;
+
+                currentGeneratedDoc = doc;
+                currentPdfBlob = blob;
+                currentPdfFilename = filename;
+                currentFormData = data;
+
+                doc.save(filename);
+
+                const emailSubject = encodeURIComponent(`Planilla de Inscripción - ${data.schoolName} - ${data.category}`);
+                const body = `Cordial saludo Colegio Mis Monachos,\n\nAdjunto la planilla de inscripción oficial para el XIX Festival Futbolístico Estrellitas del Deporte.\n\nColegio / Institución: ${data.schoolName}\nCategoría: ${data.category}\nDirector Técnico / Delegado: ${data.coachName}\nTeléfono: ${data.coachPhone}\nCorreo: ${data.coachEmail}\n\nArchivo: ${filename}\n\nAtentamente,\n${data.coachName}`;
+                const emailBody = encodeURIComponent(body);
+
+                gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(APP_CONFIG.secondaryEmail)}&su=${emailSubject}&body=${emailBody}`;
+                window.__mailSubject = `Planilla de Inscripción - ${data.schoolName} - ${data.category}`;
+                window.__mailBody = body;
+
+                document.getElementById('modalSchoolName').innerText = data.schoolName;
+                document.getElementById('modalCategory').innerText = data.category;
+                document.getElementById('pdfModal').classList.remove('hidden');
+                showToast('El PDF se descargó correctamente. Gmail y tu aplicación de correo estarán listos con los datos, pero el archivo debe adjuntarse desde el dispositivo.', 'success');
+            } catch (err) {
+                console.error('Error al generar PDF:', err);
+                showToast(`No fue posible generar la planilla: ${err.message || err}`, 'error');
+            } finally {
+                submitBtn?.classList.remove('btn-loading');
+                if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-file-pdf text-yellow-300 text-xl"></i><span>GENERAR PLANILLA EN PDF Y ENVIAR</span>';
+            }
+        }
+
+        function openGmailWeb() {
+            if (!gmailComposeUrl) return;
+            window.open(gmailComposeUrl, '_blank', 'noopener,noreferrer');
+            showToast(`Gmail se abrirá con destino ${APP_CONFIG.secondaryEmail}. Adjunta <strong>${currentPdfFilename}</strong> antes de enviar.`, 'info');
+        }
+
+        function openDefaultMailClient() {
+            const to = encodeURIComponent(APP_CONFIG.secondaryEmail);
+            const subject = encodeURIComponent(window.__mailSubject || 'Planilla de Inscripción - XIX Festival Futbolístico');
+            const body = encodeURIComponent(window.__mailBody || 'Adjunto la planilla de inscripción en PDF.');
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        }
+
+        async function copyEmailData() {
+            const text = `Para: ${APP_CONFIG.secondaryEmail}\nAsunto: ${window.__mailSubject || ''}\n\n${window.__mailBody || ''}`;
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Los datos del correo fueron copiados al portapapeles.', 'success');
+            } catch {
+                showToast('No se pudo copiar automáticamente. Puedes seleccionar y copiar el contenido desde el correo.', 'error');
+            }
+        }
+
+        function downloadPDFAgain() {
+            if (currentGeneratedDoc) {
+                currentGeneratedDoc.save(currentPdfFilename);
+                showToast('Se descargó nuevamente la planilla PDF.', 'success');
+            }
+        }
+
+
+    </script>
+
+</body>
+</html>
